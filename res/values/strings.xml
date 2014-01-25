@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MusicLibrary</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="song_path">/storage/extSdCard/Music/Dan Mangan/Nice, Nice, Very Nice/04 Sold.flac</string>
+    <string name="album_path">/storage/extSdCard/Music/Dan Mangan/Nice, Nice, Very Nice/</string>
+    <string name="artist_path">/storage/extSdCard/Music/Dan Mangan/</string>
+    <string name="music_path">/storage/extSdCard/Music/</string>
+    <string name="title_activity_parse_meta_data">ParseMetaData</string>
+
+</resources>
