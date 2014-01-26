@@ -28,6 +28,12 @@ local.properties
 # PDT-specific
 .buildpath
 
+# Android
+BuildConfig.java
+R.java
+android.jar
+android-support-v4.jar
+
 
 #################
 ## Visual Studio
