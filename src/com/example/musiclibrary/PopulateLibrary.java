@@ -59,11 +59,11 @@ public final class PopulateLibrary {
 	private boolean matchesExtension(String input, String[] items) {
 		Pattern p;
 		Matcher m;
-		
+
 		input = input.substring(input.lastIndexOf('.'));
-		
+
 		for (int i = 0; i < items.length; i++) {
-			p = Pattern.compile(items[i],Pattern.CASE_INSENSITIVE);
+			p = Pattern.compile(items[i], Pattern.CASE_INSENSITIVE);
 			m = p.matcher(input);
 			if (m.matches())
 				return m.matches();

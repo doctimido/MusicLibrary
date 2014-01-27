@@ -11,7 +11,7 @@ public class Song extends MediaMetadataRetriever {
 	public boolean hasAudio;
 	public String title;
 	public String artist;
-	public String album;	
+	public String album;
 	public String albumArtist;
 	public String trackNumber;
 	public String remixer;
@@ -28,8 +28,8 @@ public class Song extends MediaMetadataRetriever {
 	public String dateAdded;
 	public String playCount;
 	public String path;
-	//private ??? albumArt;
-	
+	// private ??? albumArt;
+
 	private File musicFile;
 
 	public Song() {
@@ -38,30 +38,29 @@ public class Song extends MediaMetadataRetriever {
 	public Song(File file) { // completes the preparation
 		setSource(file);
 
-		hasAudio = getHasAudio();
-		title = getTitle();
-		artist = getArtist();
-		album = getAlbum();
-		albumArtist = getAlbumArtist();
-		trackNumber = getTrackNumber();
-		remixer = getRemixer();
-		producer = getProducer();
-		featuring = getFeaturing();
-		genre = getGenre();
-		rating = getRating();
-		year = getYear();
-		filetype = getFiletype();
-		duration = getDuration();
-		lyrics = getLyrics();
-		fileSize = getFileSize();
-		lastPlayed = getLastPlayed();
-		dateAdded = getDateAdded();
-		playCount = getPlayCount();
+		hasAudio = getHasAudio(); // id3
+		title = getTitle(); // id3
+		artist = getArtist(); // id3
+		album = getAlbum(); // id3
+		albumArtist = getAlbumArtist(); // id3
+		trackNumber = getTrackNumber(); // id3
+		remixer = getRemixer(); // database or title
+		producer = getProducer(); // database or title
+		featuring = getFeaturing(); // database or title
+		genre = getGenre(); // id3
+		rating = getRating(); // database
+		year = getYear(); // id3
+		filetype = getFiletype(); // id3
+		duration = getDuration(); // id3
+		lyrics = getLyrics(); // ????
+		fileSize = getFileSize(); // file
+		lastPlayed = getLastPlayed(); // database
+		dateAdded = getDateAdded(); // id3
+		playCount = getPlayCount(); // database
 
 		path = file.getAbsolutePath();
-		
-	}
 
+	}
 
 	public void setSource(File file) {
 		musicFile = file;
@@ -116,7 +115,7 @@ public class Song extends MediaMetadataRetriever {
 	}
 
 	private String getYear() {
-		
+
 		return this.extractMetadata(METADATA_KEY_YEAR);
 	}
 
@@ -131,7 +130,7 @@ public class Song extends MediaMetadataRetriever {
 	private String getGenre() {
 		return this.extractMetadata(METADATA_KEY_GENRE);
 	}
-	
+
 	private String getPlayCount() {
 		// TODO Auto-generated method stub
 		return null;
