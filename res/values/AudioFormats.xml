@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Valid for Android 4.1+ -->
+    <string-array name="FormatsAll">
+        <item >AAC LC</item>
+        <item >HE-AACv1</item>
+        <item >AAC ELD</item>
+        <item >AMR-NB</item>
+        <item >AMR-WB</item>
+        <item >FLAC</item>
+        <item >MP3</item>
+        <item >MIDI</item>
+        <item >VORBIS</item>
+        <item >PCM</item>
+        <item >WAVE</item>
+    </string-array>
+    <!-- Valid for Android 3.1+ -->    <string-array name="FormatsOld">
+        <item >AAC LC</item>
+        <item >HE-AACv2</item>
+        <item >AMR-NB</item>
+        <item >AMR-WB</item>
+        <item >FLAC</item>
+        <item >MP3</item>
+        <item >MIDI</item>
+        <item >VORBIS</item>
+    </string-array>
+    <!-- Valid for Android 4.1+ -->
+    <string-array name="ExtensionsAll">
+        <item >3gp</item>
+        <item >mp4</item>
+        <item >m4a</item>
+        <item >aac</item>
+        <item >ts</item>
+        <item >flac</item>
+        <item >mp3</item>
+        <item >mid</item>
+        <item >xmf</item>
+        <item >mxmf</item>
+        <item >rtttl</item>
+        <item >rtx</item>
+        <item >ota</item>
+        <item >imy</item>
+        <item >ogg</item>
+        <item >mkv</item>
+        <item >wav</item>
+    </string-array>
+    <!-- Valid for Android 3.1+ (but not guaranteed) -->
+    <string-array name="ExtensionsOld">
+        <item >3gp</item>
+        <item >mp4</item>
+        <item >m4a</item>
+        <item >aac</item>
+        <item >ts</item>
+        <item >flac</item>
+        <item >mp3</item>
+        <item >mid</item>
+        <item >xmf</item>
+        <item >mxmf</item>
+        <item >rtttl</item>
+        <item >rtx</item>
+        <item >ota</item>
+        <item >imy</item>
+        <item >ogg</item>
+    </string-array>
+    
+</resources>

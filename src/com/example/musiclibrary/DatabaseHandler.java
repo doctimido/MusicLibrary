@@ -1,5 +1,6 @@
 package com.example.musiclibrary;
 
+import java.io.File;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -20,12 +21,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final String TABLE_SONGS = "songs";
 	private static final String KEY_SONG_ID = "songId";
 	private static final String KEY_TITLE = "songTitle";
-	private static final String KEY_ARTIST = "artist"; // maybe points to a
-														// table
+	private static final String KEY_ARTIST = "artist"; 
 	private static final String KEY_ALBUM = "album";
-	private static final String KEY_ALBUM_ARTIST = "albumArtist"; // maybe
-																	// points to
-																	// a table
+	private static final String KEY_ALBUM_ARTIST = "albumArtist";
 	private static final String KEY_TRACK_NUMBER = "trackNumber";
 	private static final String KEY_REMIXER = "remixer";
 	private static final String KEY_PRODUCER = "producer";
@@ -33,20 +31,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final String KEY_GENRE = "genre";
 	private static final String KEY_RATING = "rating"; // out of 5
 	private static final String KEY_YEAR = "year"; // date type
-	private static final String KEY_FILETYPE_ID = "filetypeId";
+	private static final String KEY_FILETYPE = "fileType";
 	private static final String KEY_DURATION = "duration";
 	private static final String KEY_LYRICS = "lyrics";
 	private static final String KEY_FILE_SIZE = "fileSize";
-	private static final String KEY_SONG_PATH = "songUri";
+	private static final String KEY_SONG_PATH = "songPath";
 	private static final String KEY_LAST_PLAYED = "lastPlayed";
 	private static final String KEY_DATE_ADDED = "dateAdded";
 	private static final String KEY_PLAY_COUNT = "playCount";
-	private static final String KEY_ALBUM_ART = "albumArt";
+	//private static final String KEY_ALBUM_ART = "albumArt";
 
 	// FILETYPES table
 	private static final String TABLE_FILETYPES = "fileTypes";
-	private static final String KEY_FILETYPE = "fileType";
-
+	private static final String KEY_FILETYPE_ID = "filetypeId";
+	
 	public DatabaseHandler(Context context, String name, CursorFactory factory,
 			int version) {
 		super(context, name, factory, version);
@@ -80,16 +78,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			+ KEY_GENRE 		+ " TEXT		DEFAULT NULL,"
 			+ KEY_RATING 		+ " INTEGER		DEFAULT NULL," 
 			+ KEY_YEAR			+ " TEXT		DEFAULT NULL," 
-			+ KEY_FILETYPE_ID	+ " INTEGER		NOT NULL		REFERENCES " + TABLE_FILETYPES 
-				+ "(" + KEY_FILETYPE_ID + ")," 
+			+ KEY_FILETYPE	+ " INTEGER		NOT NULL		REFERENCES " + TABLE_FILETYPES 
+				+ "(" + KEY_FILETYPE + ")," 
 			+ KEY_DURATION		+ " INTEGER		NOT NULL		DEFAULT 0," 
 			+ KEY_LYRICS		+ " TEXT		DEFAULT NULL,"
 			+ KEY_FILE_SIZE		+ " INTEGER		NOT NULL," // not sure if this is necessary
-			+ KEY_SONG_PATH		+ " TEXT		NOT NULL," // maybe this should be BLOB
+			+ KEY_SONG_PATH		+ " TEXT		UNIQUE," // maybe this should be BLOB
 			+ KEY_LAST_PLAYED 	+ " TEXT		DEFAULT NULL,"
 			+ KEY_DATE_ADDED	+ " TEXT		DEFAULT CURRENT_TIMESTAMP," 
 			+ KEY_PLAY_COUNT	+ " INTEGER		DEFAULT 0,"
-			+ KEY_ALBUM_ART		 + " TEXT		DEFAULT NULL" // not sure about this
+			//+ KEY_ALBUM_ART		 + " TEXT		DEFAULT NULL" 
 			+ ")";
 		// @formatter:on
 		
@@ -112,17 +110,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getWritableDatabase();
 
 		ContentValues values = new ContentValues();
+		// songId
 		values.put(KEY_TITLE, song.title);
 		values.put(KEY_ARTIST, song.artist);
 		values.put(KEY_ALBUM, song.album);
-		values.put(KEY_GENRE, song.genre);
 		values.put(KEY_ALBUM_ARTIST, song.albumArtist);
-		values.put(KEY_DURATION, song.duration);
 		values.put(KEY_TRACK_NUMBER, song.trackNumber);
+		values.put(KEY_REMIXER, song.remixer);
+		values.put(KEY_PRODUCER, song.producer);
+		values.put(KEY_FEATURING, song.featuring);
+		values.put(KEY_GENRE, song.genre);	
+		values.put(KEY_RATING, song.rating);
 		values.put(KEY_YEAR, song.year);
-		values.put(KEY_DATE_ADDED, song.dateAdded);
+		values.put(KEY_FILETYPE, song.filetype);
+		values.put(KEY_DURATION, song.duration);
+		values.put(KEY_LYRICS, song.lyrics);
+		values.put(KEY_FILE_SIZE, song.fileSize);
 		values.put(KEY_SONG_PATH, song.path);
-
+		values.put(KEY_LAST_PLAYED, song.lastPlayed);
+		values.put(KEY_DATE_ADDED, song.dateAdded);
+		values.put(KEY_PLAY_COUNT, song.playCount);
+		//values.put(KEY_ALBUM_ART, song.albumArt);
+		
 		// Inserting Row
 		db.insert(TABLE_SONGS, null, values);
 		db.close(); // Closing database connection
@@ -140,21 +149,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			cursor.moveToFirst();
 		}
 
-		SongUnused song = new SongUnused(Uri.parse(cursor.getString(1))); // needs
-																			// to
-																			// be
-																			// changed
+		Song song = new Song(cursor.getString(1)); // needs to be changed
 
 		return song;
 	}
 
 	// Returns a List of all songs
 	public List<Song> getSetOfSongs() {
+		return null;
 
 	}
 
 	// updates a Song with the modified info
 	public int updateSong(Song song) {
+		return 0;
 
 	}
 

@@ -8,7 +8,9 @@ import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
 public class Song extends MediaMetadataRetriever {
+	
 	public boolean hasAudio;
+	
 	public String title;
 	public String artist;
 	public String album;
@@ -37,7 +39,18 @@ public class Song extends MediaMetadataRetriever {
 
 	public Song(File file) { // completes the preparation
 		setSource(file);
+		initialize();
+		path = file.getAbsolutePath();
+	}
 
+	public Song(String fileString) {
+		File file = new File(fileString);
+		setSource(file);
+		initialize();
+		path = fileString;
+	}
+	
+	private void initialize(){
 		hasAudio = getHasAudio(); // id3
 		title = getTitle(); // id3
 		artist = getArtist(); // id3
@@ -57,9 +70,6 @@ public class Song extends MediaMetadataRetriever {
 		lastPlayed = getLastPlayed(); // database
 		dateAdded = getDateAdded(); // id3
 		playCount = getPlayCount(); // database
-
-		path = file.getAbsolutePath();
-
 	}
 
 	public void setSource(File file) {
