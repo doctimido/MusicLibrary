@@ -7,25 +7,30 @@ import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 
-import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
+
+import com.waves.library.utils.ParseSong;
 
 public class Song2 extends AudioFile {
 	MediaMetadataRetriever aTag = new MediaMetadataRetriever();
 
-	/*
-	 * Do I need all of this??? public boolean hasAudio;
-	 * 
-	 * public String title; public String sortTitle; public String artist;
-	 * public String sortArtist; public String album; public String albumArtist;
-	 * public String trackNumber; public String remixer; public String producer;
-	 * public String featuring; public String genre; public String rating;
-	 * public String year; public String filetype; public String duration;
-	 * public String lyrics; public String fileSize; public String lastPlayed;
-	 * public String dateAdded; public String playCount; public String path;
-	 * public Bitmap albumArt;
-	 */
+	
+//	Do I need all of this??? 
+//	public boolean hasAudio;
+	public String title; 
+//	public String sortTitle; 
+	public String artist;
+//	public String sortArtist; 
+	public String album; 
+//	public String albumArtist;
+//	public String trackNumber; public String remixer; public String producer;
+//	public String featuring; public String genre; public String rating;
+//	public String year; public String filetype; public String duration;
+//	public String lyrics; public String fileSize; public String lastPlayed;
+//	public String dateAdded; public String playCount; public String path;
+//	public Bitmap albumArt;
+	
 
 	public Song2() {
 		// TODO Auto-generated constructor stub
@@ -101,7 +106,8 @@ public class Song2 extends AudioFile {
 	}
 
 	public String getAlbum() {
-		return tag.getFirst(FieldKey.ALBUM);
+		album = tag.getFirst(FieldKey.ALBUM);
+		return album;
 	}
 
 	public String getSortAlbum() {
@@ -109,7 +115,8 @@ public class Song2 extends AudioFile {
 	}
 
 	public String getArtist() {
-		return tag.getFirst(FieldKey.ARTIST);
+		artist = tag.getFirst(FieldKey.ARTIST);
+		return artist;
 	}
 
 	public String getSortArtist() {
@@ -117,7 +124,8 @@ public class Song2 extends AudioFile {
 	}
 
 	public String getTitle() {
-		return tag.getFirst(FieldKey.TITLE);
+		title = tag.getFirst(FieldKey.TITLE);
+		return title;
 	}
 
 	public String getSortTitle() {
@@ -179,10 +187,18 @@ public class Song2 extends AudioFile {
 
 	public String getFeaturing() {
 		String s = tag.getFirst(FieldKey.CUSTOM1);
-		if (s.isEmpty())
-			return parseFeat();
-		else
-			return null;
+		if (s.isEmpty()) {
+			if (title.isEmpty()) {
+				getTitle();
+			}
+			if (artist.isEmpty()) {
+				getArtist();
+			}
+			return ParseSong.featuring(getTitle(), getArtist());
+		}
+		else {
+			return s;
+		}
 	}
 
 	public String getProducer() {

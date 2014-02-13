@@ -9,7 +9,7 @@ public class ParseSong {
 //		a = artist;
 	}
 	
-	public static String featuring() {
+	public static String featuring(String title, String artist) {
 		String s1 = "featuring";
 		String s2 = "feat.";
 		String s3 = "feat";
