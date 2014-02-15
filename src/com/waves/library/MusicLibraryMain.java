@@ -1,4 +1,4 @@
-package com.example.musiclibrary;
+package com.waves.library;
 
 import java.io.File;
 
@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
+
+import com.example.musiclibrary.R;
 
 public class MusicLibraryMain extends Activity {
 	TextView filePath, textAlbum, textArtist, textTitle;

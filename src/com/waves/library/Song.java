@@ -1,4 +1,4 @@
-package com.example.musiclibrary;
+package com.waves.library;
 
 import java.io.File;
 
@@ -7,15 +7,15 @@ import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 
+import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
 import com.waves.library.utils.ParseSong;
 
-public class Song2 extends AudioFile {
+public class Song extends AudioFile {
 	MediaMetadataRetriever aTag = new MediaMetadataRetriever();
 
-	
 //	Do I need all of this??? 
 //	public boolean hasAudio;
 	public String title; 
@@ -31,30 +31,28 @@ public class Song2 extends AudioFile {
 //	public String dateAdded; public String playCount; public String path;
 //	public Bitmap albumArt;
 	
+	
+	public Song() {}
 
-	public Song2() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public Song2(String s) {
+	public Song(String s) {
 		setSource(new File(s));
 	}
 
-	public Song2(File f) {
+	public Song(File f) {
 		setSource(f);
 	}
 
-	public Song2(File f, AudioHeader audioHeader, Tag tag) {
+	public Song(File f, AudioHeader audioHeader, Tag tag) {
 		super(f, audioHeader, tag);
 		setSource(f);
 	}
 
-	public Song2(String s, AudioHeader audioHeader, Tag tag) {
+	public Song(String s, AudioHeader audioHeader, Tag tag) {
 		super(s, audioHeader, tag);
 		setSource(new File(s));
 	}
 
-	private void setSource(File f) {
+	public void setSource(File f) {
 		// set jaudiotagger source
 		this.file = f;
 		this.tag = this.createDefaultTag();
@@ -66,6 +64,11 @@ public class Song2 extends AudioFile {
 			Log.d(this.toString(), file.getAbsolutePath());
 			e.printStackTrace();
 		}
+		
+		// reset values
+		artist = "";
+		title = "";
+		album = "";
 
 		// set up database tags (maybe don't want to do all of this)
 		/*
@@ -81,6 +84,13 @@ public class Song2 extends AudioFile {
 		 * database dateAdded = getDateAdded(); // id3 playCount =
 		 * getPlayCount(); // database
 		 */
+	}
+	
+	public void release() {
+		artist = null;
+		album = null;
+		title = null;
+		aTag.release();
 	}
 
 	public Boolean getHasAudio() {
@@ -194,7 +204,7 @@ public class Song2 extends AudioFile {
 			if (artist.isEmpty()) {
 				getArtist();
 			}
-			return ParseSong.featuring(getTitle(), getArtist());
+			return ParseSong.featuring(title, artist);
 		}
 		else {
 			return s;
@@ -207,6 +217,14 @@ public class Song2 extends AudioFile {
 
 	public String getRemixer() {
 		return tag.getFirst(FieldKey.REMIXER);
+	}
+	
+	public String getPath() {
+		return this.file.getPath();
+	}
+	
+	public Bitmap getAlbumArt() {
+		return aTag.extractMetadata(MediaMetadataRetriever)
 	}
 	
 	

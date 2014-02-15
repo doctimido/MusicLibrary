@@ -1,6 +1,5 @@
-package com.example.musiclibrary;
+package com.waves.library;
 
-import java.io.File;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -10,7 +9,6 @@ import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
 
 // TODO add playlist support
 public class DatabaseHandler extends SQLiteOpenHelper {
@@ -114,22 +112,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(KEY_TITLE, song.title);
 		values.put(KEY_ARTIST, song.artist);
 		values.put(KEY_ALBUM, song.album);
-		values.put(KEY_ALBUM_ARTIST, song.albumArtist);
-		values.put(KEY_TRACK_NUMBER, song.trackNumber);
-		values.put(KEY_REMIXER, song.remixer);
-		values.put(KEY_PRODUCER, song.producer);
-		values.put(KEY_FEATURING, song.featuring);
-		values.put(KEY_GENRE, song.genre);	
-		values.put(KEY_RATING, song.rating);
-		values.put(KEY_YEAR, song.year);
-		values.put(KEY_FILETYPE, song.filetype);
-		values.put(KEY_DURATION, song.duration);
-		values.put(KEY_LYRICS, song.lyrics);
-		values.put(KEY_FILE_SIZE, song.fileSize);
-		values.put(KEY_SONG_PATH, song.path);
-		values.put(KEY_LAST_PLAYED, song.lastPlayed);
-		values.put(KEY_DATE_ADDED, song.dateAdded);
-		values.put(KEY_PLAY_COUNT, song.playCount);
+		values.put(KEY_ALBUM_ARTIST, song.getAlbumArtist());
+		values.put(KEY_TRACK_NUMBER, song.getTrackNumber());
+		values.put(KEY_REMIXER, song.getRemixer());
+		values.put(KEY_PRODUCER, song.getProducer());
+		values.put(KEY_FEATURING, song.getFeaturing());
+		values.put(KEY_GENRE, song.getGenre());	
+		values.put(KEY_RATING, song.getRating());
+		values.put(KEY_YEAR, song.getYear());
+		values.put(KEY_FILETYPE, song.getFiletype());
+		values.put(KEY_DURATION, song.getDuration());
+		values.put(KEY_LYRICS, song.getLyrics());
+		values.put(KEY_FILE_SIZE, song.getFileSize());
+		values.put(KEY_SONG_PATH, song.getPath());
+		values.put(KEY_LAST_PLAYED, song.getLastPlayed());
+		values.put(KEY_DATE_ADDED, song.getDateAdded());
+		values.put(KEY_PLAY_COUNT, song.getPlayCount());
 		//values.put(KEY_ALBUM_ART, song.albumArt);
 		
 		// Inserting Row

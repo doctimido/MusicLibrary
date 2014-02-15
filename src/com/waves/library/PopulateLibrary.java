@@ -1,4 +1,4 @@
-package com.example.musiclibrary;
+package com.waves.library;
 
 import java.io.File;
 import java.util.regex.Matcher;
@@ -10,19 +10,19 @@ public final class PopulateLibrary {
 	public static final String[] musicFileTypes = { ".mp3", ".flac", ".wav",
 			".aac" };
 
-	private Song meta;
+	private Song song;
 	private File topDirectory;
 
 	public PopulateLibrary() {
 	}
 
 	public PopulateLibrary(String file) {
-		meta = new Song();
+		song = new Song();
 		topDirectory = new File(file);
 	}
 
 	public PopulateLibrary(File file) {
-		meta = new Song();
+		song = new Song();
 		topDirectory = file;
 	}
 
@@ -47,7 +47,7 @@ public final class PopulateLibrary {
 				// file_type & maybe others
 				if (matchesExtension(fileEntry.getName(), musicFileTypes)) {
 					Log.d("loopDebug", fileEntry.getPath());
-					meta.setSource(fileEntry);
+					song.setSource(fileEntry);
 				}
 				// Log.d(this.loopDebug,meta.getTitle());
 				// return fileEntry;
