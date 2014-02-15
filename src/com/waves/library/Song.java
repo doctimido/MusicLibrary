@@ -224,7 +224,7 @@ public class Song extends AudioFile {
 	}
 	
 	public Bitmap getAlbumArt() {
-		return aTag.extractMetadata(MediaMetadataRetriever)
+		return null;
 	}
 	
 	

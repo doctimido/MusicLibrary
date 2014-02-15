@@ -9,5 +9,6 @@
     <string name="artist_path">/storage/extSdCard/Music/Dan Mangan/</string>
     <string name="music_path">/storage/extSdCard/Music/</string>
     <string name="title_activity_parse_meta_data">ParseMetaData</string>
+    <string name="title_activity_home_page">HomePage</string>
 
 </resources>

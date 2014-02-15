@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="18" />
+        android:targetSdkVersion="19" />
 
     <application
         android:allowBackup="true"
@@ -14,8 +14,8 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.example.musiclibrary.MusicLibraryMain"
-            android:label="@string/app_name" >
+            android:name="com.waves.ui.HomePage"
+            android:label="@string/title_activity_home_page" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

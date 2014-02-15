@@ -1,16 +1,21 @@
-package com.waves.library;
+package com.waves.ui;
 
 import java.io.File;
 
-import android.app.Activity;
+import android.app.ListActivity;
+import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
+import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 import com.example.musiclibrary.R;
+import com.waves.library.DatabaseHandler;
+import com.waves.library.PopulateLibrary;
+import com.waves.library.Song;
 
-public class MusicLibraryMain extends Activity {
+public class SongList extends ListActivity {
 	TextView filePath, textAlbum, textArtist, textTitle;
 	String loopDebug = "loopDebug";
 	String loopTimer = "loopTimer";
@@ -20,18 +25,17 @@ public class MusicLibraryMain extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_music_library_main);
+		
+		DatabaseHandler dbh;
+		Cursor c;
+		Context xt;
+		CursorAdapter cad = null;
+		
+		// TODO full database to list
+		SqliteDatabase db = DatabaseHandler()
+		
+		this.setListAdapter(cad);		
 
-		// use a different path for testing
-		meta = new Song();
-		File myDir = new File(getString(R.string.music_path));
-
-		long startTime = System.nanoTime();
-		PopulateLibrary lib = new PopulateLibrary(myDir);
-
-		lib.populate();
-		long stopTime = System.nanoTime();
-		Log.d(this.loopTimer, "That took: " + (stopTime - startTime)
-				+ " nanoseconds");
 
 		// Log.d(this.loopTimer, "start");
 		// fileLoop(myDir);
