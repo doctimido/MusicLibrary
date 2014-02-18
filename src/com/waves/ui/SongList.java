@@ -1,52 +1,51 @@
 package com.waves.ui;
 
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.app.ListActivity;
-import android.content.Context;
-import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CursorAdapter;
-import android.widget.TextView;
+import android.widget.ListView;
 
 import com.example.musiclibrary.R;
 import com.waves.library.DatabaseHandler;
-import com.waves.library.PopulateLibrary;
 import com.waves.library.Song;
 
 public class SongList extends ListActivity {
-	TextView filePath, textAlbum, textArtist, textTitle;
-	String loopDebug = "loopDebug";
-	String loopTimer = "loopTimer";
-	Song meta; // define at the beginning to prevent memory leaks
+	
+	private static final String[] musicFileTypes = { ".mp3" }; //, ".flac", ".wav", ".aac" };
+	private Song song; // define at the beginning to prevent memory leaks
+	private DatabaseHandler dbHandler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_music_library_main);
 		
-		DatabaseHandler dbh;
-		Cursor c;
-		Context xt;
-		CursorAdapter cad = null;
+		dbHandler = new DatabaseHandler(this.getApplicationContext());
+		fullScan(new File("/storage/extSdCard/Music"));
 		
-		// TODO full database to list
-		SqliteDatabase db = DatabaseHandler()
+		// TODO figure this out
+		this.setListAdapter(new CursorAdapter(this,
+				dbHandler.getTagList(DatabaseHandler.KEY_TITLE),
+				DatabaseHandler.KEY_TITLE, false));		
+		ListView lv = getListView();
 		
-		this.setListAdapter(cad);		
 
+		lv.setOnItemClickListener(new OnItemClickListener() {
+	          public void onItemClick(AdapterView<?> parent, View view,
+	              int position, long id) {
+	        	  // Launch new activity upon selection
+	          }
+	        });
 
-		// Log.d(this.loopTimer, "start");
-		// fileLoop(myDir);
-		// Log.d(this.loopTimer, "stop");
-
-		// File[] fileArray = myDir.listFiles();
-		// AudioMetadata meta = new AudioMetadata(fileArray[0]);
-
-		// Log.d(this.toString(),meta.getAlbum());
-		// Log.d(this.toString(),meta.getArtist());
-		// Log.d(this.toString(),meta.getTitle());
 
 	}
 
@@ -57,27 +56,42 @@ public class SongList extends ListActivity {
 		return true;
 	}
 
-	private void fileLoop(File startDir) {
+	private void fullScan(File startDir) {
 
 		for (final File fileEntry : startDir.listFiles()) {
 			if (fileEntry.isDirectory()) {
 				// Log.d(this.loopDebug, fileEntry.toString());
-				fileLoop(fileEntry);
+				fullScan(fileEntry);
 			} else {
-				// create entry in the database:
-				// uri or path album_artist artist album title genre time
-				// file_type & maybe others
-
-				meta.setSource(fileEntry);
+				if (matchesExtension(fileEntry.getName(), musicFileTypes)) {
+					Log.d("loopDebug", fileEntry.getPath());
+					song.setSource(fileEntry);
+					dbHandler.addSong(song);
+				}
 			}
 		}
+	}
+	
+	private boolean matchesExtension(String input, String[] items) {
+		Pattern p;
+		Matcher m;
+
+		input = input.substring(input.lastIndexOf('.'));
+
+		for (int i = 0; i < items.length; i++) {
+			p = Pattern.compile(items[i], Pattern.CASE_INSENSITIVE);
+			m = p.matcher(input);
+			if (m.matches())
+				return m.matches();
+		}
+		return false;
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 
-		meta.release();
+		song.release();
 	}
 
 }

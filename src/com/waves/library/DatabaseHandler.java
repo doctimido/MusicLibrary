@@ -12,36 +12,44 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 // TODO add playlist support
 public class DatabaseHandler extends SQLiteOpenHelper {
-	private static final int DATABASE_VERSION = 1;
-	private static final String DATABASE_NAME = "musicLibrary";
+	public static final int DATABASE_VERSION = 1;
+	public static final String DATABASE_NAME = "musicLibrary";
+	
+	// Read/Write
+	public static final boolean KEY_READABLE = false;
+	public static final boolean KEY_WRITEABLE = true;
 
 	// Main library table
-	private static final String TABLE_SONGS = "songs";
-	private static final String KEY_SONG_ID = "songId";
-	private static final String KEY_TITLE = "songTitle";
-	private static final String KEY_ARTIST = "artist"; 
-	private static final String KEY_ALBUM = "album";
-	private static final String KEY_ALBUM_ARTIST = "albumArtist";
-	private static final String KEY_TRACK_NUMBER = "trackNumber";
-	private static final String KEY_REMIXER = "remixer";
-	private static final String KEY_PRODUCER = "producer";
-	private static final String KEY_FEATURING = "featuring";
-	private static final String KEY_GENRE = "genre";
-	private static final String KEY_RATING = "rating"; // out of 5
-	private static final String KEY_YEAR = "year"; // date type
-	private static final String KEY_FILETYPE = "fileType";
-	private static final String KEY_DURATION = "duration";
-	private static final String KEY_LYRICS = "lyrics";
-	private static final String KEY_FILE_SIZE = "fileSize";
-	private static final String KEY_SONG_PATH = "songPath";
-	private static final String KEY_LAST_PLAYED = "lastPlayed";
-	private static final String KEY_DATE_ADDED = "dateAdded";
-	private static final String KEY_PLAY_COUNT = "playCount";
-	//private static final String KEY_ALBUM_ART = "albumArt";
+	public static final String TABLE_SONGS = "songs";
+	public static final String KEY_SONG_ID = "songId";
+	public static final String KEY_TITLE = "songTitle";
+	public static final String KEY_ARTIST = "artist"; 
+	public static final String KEY_ALBUM = "album";
+	public static final String KEY_ALBUM_ARTIST = "albumArtist";
+	public static final String KEY_TRACK_NUMBER = "trackNumber";
+	public static final String KEY_REMIXER = "remixer";
+	public static final String KEY_PRODUCER = "producer";
+	public static final String KEY_FEATURING = "featuring";
+	public static final String KEY_GENRE = "genre";
+	public static final String KEY_RATING = "rating"; // out of 5
+	public static final String KEY_YEAR = "year"; // date type
+	public static final String KEY_FILETYPE = "fileType";
+	public static final String KEY_DURATION = "duration";
+	public static final String KEY_LYRICS = "lyrics";
+	public static final String KEY_FILE_SIZE = "fileSize";
+	public static final String KEY_SONG_PATH = "songPath";
+	public static final String KEY_LAST_PLAYED = "lastPlayed";
+	public static final String KEY_DATE_ADDED = "dateAdded";
+	public static final String KEY_PLAY_COUNT = "playCount";
+	//public static final String KEY_ALBUM_ART = "albumArt";
 
 	// FILETYPES table
-	private static final String TABLE_FILETYPES = "fileTypes";
-	private static final String KEY_FILETYPE_ID = "filetypeId";
+	public static final String TABLE_FILETYPES = "fileTypes";
+	public static final String KEY_FILETYPE_ID = "filetypeId";
+	
+	public DatabaseHandler(Context context) {
+		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+	}
 	
 	public DatabaseHandler(Context context, String name, CursorFactory factory,
 			int version) {
@@ -147,21 +155,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			cursor.moveToFirst();
 		}
 
-		Song song = new Song(cursor.getString(1)); // needs to be changed
+		Song song = new Song(cursor.getString(1)); // TODO needs to be changed
 
 		return song;
 	}
+	
 
+	// Returns a List of filtered songs
+	public Cursor getTagList(String key, String[] filter) {
+		Cursor c;
+		SQLiteDatabase db = this.getReadableDatabase();
+		c = db.query(TABLE_SONGS, new String[] { key },
+				key + "=?", filter, null, null, key + " DESC" );
+		db.close();
+		return c;
+	}
+	
 	// Returns a List of all songs
-	public List<Song> getSetOfSongs() {
-		return null;
-
+	public Cursor getTagList(String key) {
+		Cursor c;
+		SQLiteDatabase db = this.getReadableDatabase();
+		c = db.query(TABLE_SONGS, new String[] { key },
+				key, null, null, null, key + " DESC" );
+		db.close();
+		return c;
 	}
 
 	// updates a Song with the modified info
-	public int updateSong(Song song) {
-		return 0;
-
+	public void updateSong(Song song) {
+		
 	}
 
 	// deletes a song record
