@@ -1,6 +1,18 @@
 package com.waves.library;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.AudioHeader;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.TagException;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -112,50 +124,62 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	}
 
 	// Add new song to database
-	public void addSong(Song song) {
+	public void addSong(File f, Tag tag, AudioHeader head) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
 		ContentValues values = new ContentValues();
-		// songId
-		values.put(KEY_TITLE, song.title);
-		values.put(KEY_ARTIST, song.artist);
-		values.put(KEY_ALBUM, song.album);
-		values.put(KEY_ALBUM_ARTIST, song.getAlbumArtist());
-		values.put(KEY_TRACK_NUMBER, song.getTrackNumber());
-		values.put(KEY_REMIXER, song.getRemixer());
-		values.put(KEY_PRODUCER, song.getProducer());
-		values.put(KEY_FEATURING, song.getFeaturing());
-		values.put(KEY_GENRE, song.getGenre());	
-		values.put(KEY_RATING, song.getRating());
-		values.put(KEY_YEAR, song.getYear());
-		values.put(KEY_FILETYPE, song.getFiletype());
-		values.put(KEY_DURATION, song.getDuration());
-		values.put(KEY_LYRICS, song.getLyrics());
-		values.put(KEY_FILE_SIZE, song.getFileSize());
-		values.put(KEY_SONG_PATH, song.getPath());
-		values.put(KEY_LAST_PLAYED, song.getLastPlayed());
-		values.put(KEY_DATE_ADDED, song.getDateAdded());
-		values.put(KEY_PLAY_COUNT, song.getPlayCount());
-		//values.put(KEY_ALBUM_ART, song.albumArt);
+	
+		values.put(KEY_TITLE, tryField(tag, 
+				new FieldKey[] { FieldKey.TITLE_SORT, FieldKey.TITLE }));
+		values.put(KEY_ARTIST, tryField(tag, 
+				new FieldKey[] { FieldKey.ARTIST_SORT, FieldKey.ARTIST }));
+		values.put(KEY_ALBUM, tryField(tag,
+				new FieldKey[] { FieldKey.ALBUM_SORT, FieldKey.ALBUM }));
+		values.put(KEY_ALBUM_ARTIST, tryField(tag,
+				new FieldKey[] { FieldKey.ALBUM_ARTIST_SORT, FieldKey.ALBUM_ARTIST }));
+		values.put(KEY_TRACK_NUMBER, tag.getFirst(FieldKey.TRACK));
+		values.put(KEY_REMIXER, tag.getFirst(FieldKey.REMIXER));
+		values.put(KEY_PRODUCER, tag.getFirst(FieldKey.PRODUCER));
+		values.put(KEY_FEATURING, tag.getFirst(FieldKey.CUSTOM1)); // TODO this stuff again
+		values.put(KEY_GENRE, tag.getFirst(FieldKey.GENRE));	
+		values.put(KEY_RATING, tag.getFirst(FieldKey.RATING));
+		values.put(KEY_YEAR, tag.getFirst(FieldKey.YEAR));
+		values.put(KEY_FILETYPE, head.getFormat());
+		values.put(KEY_DURATION, head.getTrackLength());
+		values.put(KEY_LYRICS, tag.getFirst(FieldKey.LYRICS));
+		values.put(KEY_SONG_PATH, f.getPath());
 		
 		// Inserting Row
 		db.insert(TABLE_SONGS, null, values);
 		db.close(); // Closing database connection
 	}
+	
+	private String tryField(Tag tag, FieldKey[] id) {
+		String s;
+		
+		for (int i = 0; i<id.length; i++) {
+			s = tag.getFirst(id[i]);
+			if (!s.isEmpty()) {
+				return s;
+			}
+		}
+		
+		return "";
+	}
 
 	// Returns a Song
-	public Song getSongById(int id) {
+	public AudioFile getSongById(int id) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
 		SQLiteDatabase db = this.getReadableDatabase();
-
-		Cursor cursor = db.query(TABLE_SONGS, new String[] { KEY_SONG_ID,
-				KEY_TITLE, KEY_ARTIST, KEY_ALBUM }, KEY_SONG_ID + "=?",
-				new String[] { String.valueOf(id) }, null, null, null, null);
-
+		Cursor cursor = db.query(TABLE_SONGS, new String[] { KEY_SONG_PATH },
+				KEY_SONG_ID + "=?", new String[] { String.valueOf(id) },
+				null, null, null);
+		
 		if (cursor != null) {
 			cursor.moveToFirst();
 		}
-
-		Song song = new Song(cursor.getString(1)); // TODO needs to be changed
+		
+		// gets the path from the cursor
+		AudioFile song = AudioFileIO.read(new File(cursor.getString(0)));
 
 		return song;
 	}
@@ -190,5 +214,5 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public void deleteSong(Song song) {
 
 	}
-
+	
 }

@@ -1,36 +1,38 @@
 package com.waves.ui;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.TagException;
+
 import android.app.ListActivity;
 import android.app.LoaderManager;
-import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView.LayoutParams;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 
 import com.example.musiclibrary.R;
 import com.waves.library.DatabaseHandler;
-import com.waves.library.Song;
 
 public class SongList extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 	
 	private static final String[] musicFileTypes = { ".mp3" }; //, ".flac", ".wav", ".aac" };
-	private Song song; // define at the beginning to prevent memory leaks
+	private AudioFile song; // define at the beginning to prevent memory leaks
 	private DatabaseHandler dbHandler;
 	private SimpleCursorAdapter adapter;
 
@@ -58,7 +60,24 @@ public class SongList extends ListActivity implements LoaderManager.LoaderCallba
         
         // Populate the database
 		dbHandler = new DatabaseHandler(this.getApplicationContext());
-		fullScan(new File("/storage/extSdCard/Music"));
+		try {
+			fullScan(new File("/storage/extSdCard/Music"));
+		} catch (CannotReadException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TagException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ReadOnlyFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidAudioFrameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		// Create an empty adapter we will use to display the loaded data.
         // We pass null for the cursor, then update it in onLoadFinished()
@@ -107,17 +126,17 @@ public class SongList extends ListActivity implements LoaderManager.LoaderCallba
 
 	
 	// File scanner (Maybe should become its own class)
-	private void fullScan(File startDir) {
+	private void fullScan(File startDir) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
 
-		for (final File fileEntry : startDir.listFiles()) {
-			if (fileEntry.isDirectory()) {
+		for (final File file : startDir.listFiles()) {
+			if (file.isDirectory()) {
 				// Log.d(this.loopDebug, fileEntry.toString());
-				fullScan(fileEntry);
+				fullScan(file);
 			} else {
-				if (matchesExtension(fileEntry.getName(), musicFileTypes)) {
+				if (matchesExtension(file.getName(), musicFileTypes)) {
 					//Log.d("loopDebug", fileEntry.getPath());
-					song.setSource(fileEntry);
-					dbHandler.addSong(song);
+					song = AudioFileIO.read(file);
+					dbHandler.addSong(file, song.getTag(), song.getAudioHeader());
 				}
 			}
 		}
@@ -142,7 +161,6 @@ public class SongList extends ListActivity implements LoaderManager.LoaderCallba
 	protected void onDestroy() {
 		super.onDestroy();
 
-		song.release();
 	}
 
 }

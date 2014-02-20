@@ -7,6 +7,7 @@ import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 
+
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
@@ -33,13 +34,9 @@ public class Song extends AudioFile {
 	
 	
 	public Song() {}
-
-	public Song(String s) {
-		setSource(new File(s));
-	}
-
-	public Song(File f) {
-		setSource(f);
+	
+	public Song(AudioFile af) {
+		setSource(af);
 	}
 
 	public Song(File f, AudioHeader audioHeader, Tag tag) {
@@ -51,7 +48,12 @@ public class Song extends AudioFile {
 		super(s, audioHeader, tag);
 		setSource(new File(s));
 	}
-
+	
+	public void setSource(AudioFile af) {
+		this.s
+	}
+	
+	// TODO probably get rid of this, I was using it wrong
 	public void setSource(File f) {
 		// set jaudiotagger source
 		this.file = f;
