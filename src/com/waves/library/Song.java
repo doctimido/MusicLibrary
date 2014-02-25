@@ -49,9 +49,7 @@ public class Song extends AudioFile {
 		setSource(new File(s));
 	}
 	
-	public void setSource(AudioFile af) {
-		this.s
-	}
+	public void setSource(AudioFile af) {}
 	
 	// TODO probably get rid of this, I was using it wrong
 	public void setSource(File f) {

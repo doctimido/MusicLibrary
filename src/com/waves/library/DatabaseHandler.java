@@ -55,9 +55,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public static final String KEY_PLAY_COUNT = "playCount";
 	//public static final String KEY_ALBUM_ART = "albumArt";
 
-	// FILETYPES table
-	public static final String TABLE_FILETYPES = "fileTypes";
-	public static final String KEY_FILETYPE_ID = "filetypeId";
+	private SQLiteDatabase db;
 	
 	public DatabaseHandler(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -78,11 +76,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		// @formatter:off
-		String CREATE_FILETYPE_TABLE = "CREATE TABLE " + TABLE_FILETYPES + "("
-			+ KEY_FILETYPE_ID
-			+ "INTEGER	PRIMARY KEY		AUTOINCREMENT	NOT NULL," + KEY_FILETYPE
-			+ "TEXT		NOT NULL		UNIQUE" + ")";
-
 		String CREATE_SONGS_TABLE = "CREATE TABLE " + TABLE_SONGS + "("
 			+ KEY_SONG_ID 		+ " INTEGER		PRIMARY KEY		AUTOINCREMENT	NOT NULL,"
 			+ KEY_TITLE 		+ " TEXT		NOT NULL," 
@@ -96,36 +89,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			+ KEY_GENRE 		+ " TEXT		DEFAULT NULL,"
 			+ KEY_RATING 		+ " INTEGER		DEFAULT NULL," 
 			+ KEY_YEAR			+ " TEXT		DEFAULT NULL," 
-			+ KEY_FILETYPE	+ " INTEGER		NOT NULL		REFERENCES " + TABLE_FILETYPES 
-				+ "(" + KEY_FILETYPE + ")," 
+			+ KEY_FILETYPE		+ " TEXT		NOT NULL,"
 			+ KEY_DURATION		+ " INTEGER		NOT NULL		DEFAULT 0," 
 			+ KEY_LYRICS		+ " TEXT		DEFAULT NULL,"
 			+ KEY_FILE_SIZE		+ " INTEGER		NOT NULL," // not sure if this is necessary
 			+ KEY_SONG_PATH		+ " TEXT		UNIQUE," // maybe this should be BLOB
 			+ KEY_LAST_PLAYED 	+ " TEXT		DEFAULT NULL,"
 			+ KEY_DATE_ADDED	+ " TEXT		DEFAULT CURRENT_TIMESTAMP," 
-			+ KEY_PLAY_COUNT	+ " INTEGER		DEFAULT 0,"
+			+ KEY_PLAY_COUNT	+ " INTEGER		DEFAULT 0"
 			//+ KEY_ALBUM_ART		 + " TEXT		DEFAULT NULL" 
 			+ ")";
 		// @formatter:on
 		
-		db.execSQL(CREATE_FILETYPE_TABLE);
 		db.execSQL(CREATE_SONGS_TABLE);
 
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		String DROP_FILETYPE_TABLE = "DROP TABLE IF EXISTS " + TABLE_FILETYPES;
 		String DROP_SONGS_TABLE = "DROP TABLE IF EXISTS " + TABLE_SONGS;
 
 		db.execSQL(DROP_SONGS_TABLE);
-		db.execSQL(DROP_FILETYPE_TABLE);
 	}
 
 	// Add new song to database
 	public void addSong(File f, Tag tag, AudioHeader head) {
-		SQLiteDatabase db = this.getWritableDatabase();
+		db = this.getWritableDatabase();
 
 		ContentValues values = new ContentValues();
 	
@@ -151,7 +140,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		
 		// Inserting Row
 		db.insert(TABLE_SONGS, null, values);
-		db.close(); // Closing database connection
+	}
+	
+	public void closeDb() {
+		if (db.isOpen()) {
+			db.close();
+		}
 	}
 	
 	private String tryField(Tag tag, FieldKey[] id) {
@@ -206,12 +200,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	}
 
 	// updates a Song with the modified info
-	public void updateSong(Song song) {
+	public void updateSong(AudioFile song) {
 		
 	}
 
 	// deletes a song record
-	public void deleteSong(Song song) {
+	public void deleteSong(AudioFile song) {
 
 	}
 	
