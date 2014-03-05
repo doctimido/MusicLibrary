@@ -35,10 +35,13 @@ public class SongList extends ListActivity implements LoaderManager.LoaderCallba
 	private AudioFile song; // define at the beginning to prevent memory leaks
 	private DatabaseHandler dbHandler;
 	private SimpleCursorAdapter adapter;
+	private int listLength;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		listLength = 0;
 		
 		// Create a progress bar to display while the list loads
         ProgressBar progressBar = new ProgressBar(this);
@@ -126,15 +129,19 @@ public class SongList extends ListActivity implements LoaderManager.LoaderCallba
 
 	
 	// File scanner (Maybe should become its own class)
-	private void fullScan(File startDir) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
-
+	private void fullScan(File startDir) 
+			throws CannotReadException, IOException, TagException, 
+			ReadOnlyFileException, InvalidAudioFrameException {
+		
 		for (final File file : startDir.listFiles()) {
-			if (file.isDirectory()) {
+			if(listLength > 100) {
+				return;
+			} else if (file.isDirectory()) {
 				// Log.d(this.loopDebug, fileEntry.toString());
 				fullScan(file);
 			} else {
 				if (matchesExtension(file.getName(), musicFileTypes)) {
-					//Log.d("loopDebug", fileEntry.getPath());
+					listLength++;
 					song = AudioFileIO.read(file);
 					dbHandler.addSong(file, song.getTag(), song.getAudioHeader());
 				}
