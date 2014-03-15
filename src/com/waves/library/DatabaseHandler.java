@@ -33,7 +33,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Main library table
 	public static final String TABLE_SONGS = "songs";
-	public static final String KEY_SONG_ID = "songId";
+	public static final String KEY_SONG_ID = "_id";	// makes it easier for cursor loader classes
 	public static final String KEY_TITLE = "songTitle";
 	public static final String KEY_ARTIST = "artist"; 
 	public static final String KEY_ALBUM = "album";
@@ -137,6 +137,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(KEY_DURATION, head.getTrackLength());
 		values.put(KEY_LYRICS, tag.getFirst(FieldKey.LYRICS));
 		values.put(KEY_SONG_PATH, f.getPath());
+		values.put(KEY_FILE_SIZE, f.length());
 		
 		// Inserting Row
 		db.insert(TABLE_SONGS, null, values);
@@ -149,7 +150,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	}
 	
 	private String tryField(Tag tag, FieldKey[] id) {
-		String s;
+		String s = new String();
 		
 		for (int i = 0; i<id.length; i++) {
 			s = tag.getFirst(id[i]);
@@ -158,7 +159,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			}
 		}
 		
-		return "";
+		return null;
 	}
 
 	// Returns a Song
