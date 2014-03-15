@@ -2,6 +2,7 @@ package com.waves.library;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jaudiotagger.audio.AudioFile;
@@ -13,6 +14,8 @@ import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
+
+import com.waves.library.utils.DbUtils;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -33,7 +36,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Main library table
 	public static final String TABLE_SONGS = "songs";
-	public static final String KEY_SONG_ID = "_id";	// makes it easier for cursor loader classes
+	public static final String KEY_SONG_ID = "songId";	// makes it easier for cursor loader classes
 	public static final String KEY_TITLE = "songTitle";
 	public static final String KEY_ARTIST = "artist"; 
 	public static final String KEY_ALBUM = "album";
@@ -77,7 +80,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase _db) {
 		// @formatter:off
 		String CREATE_SONGS_TABLE = "CREATE TABLE " + TABLE_SONGS + "("
-			+ KEY_SONG_ID 		+ " INTEGER		PRIMARY KEY		AUTOINCREMENT	NOT NULL,"
+			+ KEY_SONG_ID 		+ " INTEGER		PRIMARY KEY		AUTOINCREMENT		NOT NULL,"
 			+ KEY_TITLE 		+ " TEXT		NOT NULL," 
 			+ KEY_ARTIST		+ " TEXT		DEFAULT NULL," 
 			+ KEY_ALBUM 		+ " TEXT		DEFAULT NULL,"
@@ -139,8 +142,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(KEY_SONG_PATH, f.getPath());
 		values.put(KEY_FILE_SIZE, f.length());
 		
-		// Inserting Row
-		db.insert(TABLE_SONGS, null, values);
+		// Insert and update rows
+		db.insertWithOnConflict(TABLE_SONGS, null, values,  SQLiteDatabase.CONFLICT_REPLACE);
 	}
 	
 	public void closeDb() {
@@ -190,7 +193,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	// Returns a List of filtered songs
 	public Cursor getTagList(String key, String[] filter) {
 		Cursor c;
-		closeDb();
+		openDb();
 		db = this.getReadableDatabase();
 		c = db.query(TABLE_SONGS, new String[] { key },
 				key + "=?", filter, null, null, key + " DESC" );
@@ -199,12 +202,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	}
 	
 	// Returns a List of all songs
-	public Cursor getTagList(String key) {
+	public Cursor getTagList(String[] key) {
 		Cursor c;
 		openDb();
 
-		c = db.query(TABLE_SONGS, new String[] { key },
-				key, null, null, null, key + " DESC" );
+		c = db.rawQuery("SELECT ? AS _id,  ? FROM ? ", // TODO add sort clause
+				DbUtils.concat(key, new String[] { KEY_SONG_ID, TABLE_SONGS  }));
+
+//		c = db.query(TABLE_SONGS, new String[] { key },
+//				key, null, null, null, key + " DESC" );
 		return c;
 	}
 
