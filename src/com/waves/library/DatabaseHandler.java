@@ -74,7 +74,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	}
 
 	@Override
-	public void onCreate(SQLiteDatabase db) {
+	public void onCreate(SQLiteDatabase _db) {
 		// @formatter:off
 		String CREATE_SONGS_TABLE = "CREATE TABLE " + TABLE_SONGS + "("
 			+ KEY_SONG_ID 		+ " INTEGER		PRIMARY KEY		AUTOINCREMENT	NOT NULL,"
@@ -97,24 +97,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			+ KEY_LAST_PLAYED 	+ " TEXT		DEFAULT NULL,"
 			+ KEY_DATE_ADDED	+ " TEXT		DEFAULT CURRENT_TIMESTAMP," 
 			+ KEY_PLAY_COUNT	+ " INTEGER		DEFAULT 0"
-			//+ KEY_ALBUM_ART		 + " TEXT		DEFAULT NULL" 
 			+ ")";
 		// @formatter:on
 		
-		db.execSQL(CREATE_SONGS_TABLE);
-
+		_db.execSQL(CREATE_SONGS_TABLE);
+		db = _db;
 	}
 
 	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+	public void onUpgrade(SQLiteDatabase _db, int oldVersion, int newVersion) {
 		String DROP_SONGS_TABLE = "DROP TABLE IF EXISTS " + TABLE_SONGS;
 
-		db.execSQL(DROP_SONGS_TABLE);
+		_db.execSQL(DROP_SONGS_TABLE);
+		db = _db;
 	}
 
 	// Add new song to database
 	public void addSong(File f, Tag tag, AudioHeader head) {
-		db = this.getWritableDatabase();
+		openDb();
 
 		ContentValues values = new ContentValues();
 	
@@ -149,6 +149,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		}
 	}
 	
+	public void openDb() {
+		if (db == null) {
+			db = this.getReadableDatabase();
+		}else if (!db.isOpen()) {
+			db = this.getReadableDatabase();
+		}
+	}
+	
 	private String tryField(Tag tag, FieldKey[] id) {
 		String s = new String();
 		
@@ -164,7 +172,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Returns a Song
 	public AudioFile getSongById(int id) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
-		SQLiteDatabase db = this.getReadableDatabase();
+		openDb();
 		Cursor cursor = db.query(TABLE_SONGS, new String[] { KEY_SONG_PATH },
 				KEY_SONG_ID + "=?", new String[] { String.valueOf(id) },
 				null, null, null);
@@ -175,7 +183,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		
 		// gets the path from the cursor
 		AudioFile song = AudioFileIO.read(new File(cursor.getString(0)));
-
 		return song;
 	}
 	
@@ -183,20 +190,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	// Returns a List of filtered songs
 	public Cursor getTagList(String key, String[] filter) {
 		Cursor c;
-		SQLiteDatabase db = this.getReadableDatabase();
+		closeDb();
+		db = this.getReadableDatabase();
 		c = db.query(TABLE_SONGS, new String[] { key },
 				key + "=?", filter, null, null, key + " DESC" );
-		db.close();
+
 		return c;
 	}
 	
 	// Returns a List of all songs
 	public Cursor getTagList(String key) {
 		Cursor c;
-		SQLiteDatabase db = this.getReadableDatabase();
+		openDb();
+
 		c = db.query(TABLE_SONGS, new String[] { key },
 				key, null, null, null, key + " DESC" );
-		db.close();
 		return c;
 	}
 
