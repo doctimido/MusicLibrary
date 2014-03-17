@@ -29,16 +29,17 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHandler extends SQLiteOpenHelper {
 	public static final int DATABASE_VERSION = 1;
 	public static final String DATABASE_NAME = "musicLibrary";
-	
+
 	// Read/Write
 	public static final boolean KEY_READABLE = false;
 	public static final boolean KEY_WRITEABLE = true;
 
 	// Main library table
 	public static final String TABLE_SONGS = "songs";
-	public static final String KEY_SONG_ID = "songId";	// makes it easier for cursor loader classes
+	public static final String KEY_SONG_ID = "songId"; // makes it easier for
+														// cursor loader classes
 	public static final String KEY_TITLE = "songTitle";
-	public static final String KEY_ARTIST = "artist"; 
+	public static final String KEY_ARTIST = "artist";
 	public static final String KEY_ALBUM = "album";
 	public static final String KEY_ALBUM_ARTIST = "albumArtist";
 	public static final String KEY_TRACK_NUMBER = "trackNumber";
@@ -56,14 +57,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public static final String KEY_LAST_PLAYED = "lastPlayed";
 	public static final String KEY_DATE_ADDED = "dateAdded";
 	public static final String KEY_PLAY_COUNT = "playCount";
-	//public static final String KEY_ALBUM_ART = "albumArt";
+	// public static final String KEY_ALBUM_ART = "albumArt";
 
 	private SQLiteDatabase db;
-	
+
 	public DatabaseHandler(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
-	
+
 	public DatabaseHandler(Context context, String name, CursorFactory factory,
 			int version) {
 		super(context, name, factory, version);
@@ -102,7 +103,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			+ KEY_PLAY_COUNT	+ " INTEGER		DEFAULT 0"
 			+ ")";
 		// @formatter:on
-		
+
 		_db.execSQL(CREATE_SONGS_TABLE);
 		db = _db;
 	}
@@ -120,20 +121,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		openDb();
 
 		ContentValues values = new ContentValues();
-	
-		values.put(KEY_TITLE, tryField(tag, 
-				new FieldKey[] { FieldKey.TITLE_SORT, FieldKey.TITLE }));
-		values.put(KEY_ARTIST, tryField(tag, 
-				new FieldKey[] { FieldKey.ARTIST_SORT, FieldKey.ARTIST }));
-		values.put(KEY_ALBUM, tryField(tag,
-				new FieldKey[] { FieldKey.ALBUM_SORT, FieldKey.ALBUM }));
-		values.put(KEY_ALBUM_ARTIST, tryField(tag,
-				new FieldKey[] { FieldKey.ALBUM_ARTIST_SORT, FieldKey.ALBUM_ARTIST }));
+
+		values.put(
+				KEY_TITLE,
+				tryField(tag, new FieldKey[] { FieldKey.TITLE_SORT,
+						FieldKey.TITLE }));
+		values.put(
+				KEY_ARTIST,
+				tryField(tag, new FieldKey[] { FieldKey.ARTIST_SORT,
+						FieldKey.ARTIST }));
+		values.put(
+				KEY_ALBUM,
+				tryField(tag, new FieldKey[] { FieldKey.ALBUM_SORT,
+						FieldKey.ALBUM }));
+		values.put(
+				KEY_ALBUM_ARTIST,
+				tryField(tag, new FieldKey[] { FieldKey.ALBUM_ARTIST_SORT,
+						FieldKey.ALBUM_ARTIST }));
 		values.put(KEY_TRACK_NUMBER, tag.getFirst(FieldKey.TRACK));
 		values.put(KEY_REMIXER, tag.getFirst(FieldKey.REMIXER));
 		values.put(KEY_PRODUCER, tag.getFirst(FieldKey.PRODUCER));
-		values.put(KEY_FEATURING, tag.getFirst(FieldKey.CUSTOM1)); // TODO this stuff again
-		values.put(KEY_GENRE, tag.getFirst(FieldKey.GENRE));	
+		values.put(KEY_FEATURING, tag.getFirst(FieldKey.CUSTOM1)); // TODO this
+		values.put(KEY_GENRE, tag.getFirst(FieldKey.GENRE));
 		values.put(KEY_RATING, tag.getFirst(FieldKey.RATING));
 		values.put(KEY_YEAR, tag.getFirst(FieldKey.YEAR));
 		values.put(KEY_FILETYPE, head.getFormat());
@@ -141,87 +150,147 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(KEY_LYRICS, tag.getFirst(FieldKey.LYRICS));
 		values.put(KEY_SONG_PATH, f.getPath());
 		values.put(KEY_FILE_SIZE, f.length());
-		
+
 		// Insert and update rows
-		db.insertWithOnConflict(TABLE_SONGS, null, values,  SQLiteDatabase.CONFLICT_REPLACE);
+		db.insertWithOnConflict(TABLE_SONGS, null, values,
+				SQLiteDatabase.CONFLICT_REPLACE);
 	}
-	
+
 	public void closeDb() {
 		if (db.isOpen()) {
 			db.close();
 		}
 	}
-	
+
 	public void openDb() {
 		if (db == null) {
 			db = this.getReadableDatabase();
-		}else if (!db.isOpen()) {
+		} else if (!db.isOpen()) {
 			db = this.getReadableDatabase();
 		}
 	}
-	
+
 	private String tryField(Tag tag, FieldKey[] id) {
 		String s = new String();
-		
-		for (int i = 0; i<id.length; i++) {
+
+		for (int i = 0; i < id.length; i++) {
 			s = tag.getFirst(id[i]);
 			if (!s.isEmpty()) {
 				return s;
 			}
 		}
-		
+
 		return null;
 	}
 
 	// Returns a Song
-	public AudioFile getSongById(int id) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
+	public AudioFile getSongById(int id) throws CannotReadException,
+			IOException, TagException, ReadOnlyFileException,
+			InvalidAudioFrameException {
 		openDb();
 		Cursor cursor = db.query(TABLE_SONGS, new String[] { KEY_SONG_PATH },
-				KEY_SONG_ID + "=?", new String[] { String.valueOf(id) },
-				null, null, null);
-		
+				KEY_SONG_ID + "=?", new String[] { String.valueOf(id) }, null,
+				null, null);
+
 		if (cursor != null) {
 			cursor.moveToFirst();
 		}
-		
+
 		// gets the path from the cursor
 		AudioFile song = AudioFileIO.read(new File(cursor.getString(0)));
 		return song;
 	}
-	
 
-	// Returns a List of filtered songs
+	// Returns a List of all songs for a given tag
+	public Cursor getTagList(String key) {
+		Cursor c;
+		openDb();
+
+		c = db.rawQuery("SELECT " + key + " AS _id FROM " + TABLE_SONGS
+				+ " ORDER BY _id ASC", null);
+		return c;
+	}
+
+	public Cursor getTagList(String key, boolean grouped) {
+		Cursor c;
+		openDb();
+
+		String qStr = new String("SELECT " + key + " AS _id FROM "
+				+ TABLE_SONGS);
+
+		if (grouped)
+			qStr = qStr + " GROUP BY _id ORDER BY _id ASC";
+		else
+			qStr = qStr + " ORDER BY _id ASC";
+
+		c = db.rawQuery(qStr, null);
+		return c;
+	}
+
+	/**
+	 * 
+	 * @param key
+	 *            - Name of the column to be queried
+	 * @param filter
+	 *            - Uses SQLite LIKE filter and ANDs together the filters in the
+	 *            array. **NOTE: the LIKE general wildcard is "%" and the single
+	 *            character wildcard is "_".
+	 * @return Cursor of filtered items from the column "key"
+	 */
 	public Cursor getTagList(String key, String[] filter) {
 		Cursor c;
 		openDb();
-		db = this.getReadableDatabase();
-		c = db.query(TABLE_SONGS, new String[] { key },
-				key + "=?", filter, null, null, key + " DESC" );
 
+		String qStr = new String("SELECT " + key + " AS _id FROM "
+				+ TABLE_SONGS + " WHERE _id LIKE '" + filter[0] + "'");
+		for (int i = 1; i < filter.length; i++) {
+			qStr = qStr + "AND _id LIKE '" + filter[i] + "'";
+		}
+
+		c = db.rawQuery(qStr + " ORDER BY _id ASC", null);
 		return c;
 	}
-	
-	// Returns a List of all songs
-	public Cursor getTagList(String[] key) {
+
+	/**
+	 * 
+	 * @param key
+	 *            - Name of the column to be queried
+	 * @param filter
+	 *            - Uses SQLite LIKE filter and ANDs together the filters in the
+	 *            array. **NOTE: the LIKE general wildcard is "%" and the single
+	 *            character wildcard is "_".
+	 * @param grouped 
+	 * 			  - Boolean value indicating whether or not to group results.
+	 * @return Cursor of filtered items from the column "key"
+	 */
+	public Cursor getTagList(String key, String[] filter, boolean grouped) {
 		Cursor c;
 		openDb();
 
-		c = db.rawQuery("SELECT ? AS _id,  ? FROM ? ", // TODO add sort clause
-				DbUtils.concat(key, new String[] { KEY_SONG_ID, TABLE_SONGS  }));
+		String qStr = new String("SELECT " + key + " AS _id FROM "
+				+ TABLE_SONGS + " WHERE _id LIKE '" + filter[0] + "'");
+		for (int i = 1; i < filter.length; i++) {
+			qStr = qStr + "AND _id LIKE '" + filter[i] + "'";
+		}
 
-//		c = db.query(TABLE_SONGS, new String[] { key },
-//				key, null, null, null, key + " DESC" );
+		if (grouped)
+			qStr = qStr + " GROUP BY _id ORDER BY _id ASC";
+		else
+			qStr = qStr + " ORDER BY _id ASC";
+
+		c = db.rawQuery(qStr, null);
+
 		return c;
 	}
 
 	// updates a Song with the modified info
 	public void updateSong(AudioFile song) {
-		
+
 	}
 
 	// deletes a song record
 	public void deleteSong(AudioFile song) {
 
 	}
-	
+
 }

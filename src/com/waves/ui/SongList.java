@@ -54,7 +54,8 @@ public class SongList extends ListActivity implements LoaderManager.LoaderCallba
         ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
         root.addView(progressBar);
         
-        String[] fromColumns = {DatabaseHandler.KEY_TITLE};
+        String[] fromColumns = { "_id" };
+        String[] filter = { "l%" };
         int[] toViews = {android.R.id.text1}; // The TextView in simple_list_item_1
         
 
@@ -86,7 +87,7 @@ public class SongList extends ListActivity implements LoaderManager.LoaderCallba
         // We pass null for the cursor, then update it in onLoadFinished()
         adapter = new SimpleCursorAdapter(this, 
                 android.R.layout.simple_list_item_1, 
-                dbHandler.getTagList(fromColumns), 
+                dbHandler.getTagList(DatabaseHandler.KEY_ARTIST, filter, true), 
                 fromColumns, toViews, 0);
         setListAdapter(adapter);
 
