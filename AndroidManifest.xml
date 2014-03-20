@@ -13,7 +13,6 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-
         <activity
             android:name="com.waves.ui.HomePage"
             android:label="@string/title_activity_home_page" >
@@ -23,11 +22,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <activity 
-            android:name="com.waves.ui.SongList" 
-            android:label="@string/title_activity_song_list">
-         </activity>
+        <activity
+            android:name="com.waves.ui.SongList"
+            android:label="@string/title_activity_song_list" >
+        </activity>
+
+        <service
+            android:name="com.waves.library.FileScanService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
+
+        <receiver
+            android:name="com.waves.library.LibFileMonitor"
+            android:enabled="true"
+            android:exported="false" >
+        </receiver>
     </application>
 
 </manifest>

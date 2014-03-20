@@ -57,9 +57,7 @@ public class SongList extends ListActivity implements LoaderManager.LoaderCallba
         String[] fromColumns = { "_id" };
         String[] filter = { "l%" };
         int[] toViews = {android.R.id.text1}; // The TextView in simple_list_item_1
-        
-
-        
+         
 //        getLoaderManager().initLoader(0, null, this);
         
         // Populate the database
