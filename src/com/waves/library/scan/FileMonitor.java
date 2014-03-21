@@ -1,11 +1,11 @@
-package com.waves.library;
+package com.waves.library.scan;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-public class LibFileMonitor extends BroadcastReceiver {
-	public LibFileMonitor() {
+public class FileMonitor extends BroadcastReceiver {
+	public FileMonitor() {
 	}
 
 	@Override

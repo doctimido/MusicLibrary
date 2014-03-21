@@ -14,6 +14,8 @@ import org.jaudiotagger.tag.TagException;
 
 import android.app.ListActivity;
 import android.app.LoaderManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -28,6 +30,7 @@ import android.widget.SimpleCursorAdapter;
 
 import com.example.musiclibrary.R;
 import com.waves.library.DatabaseHandler;
+import com.waves.library.scan.FileScanService;
 
 public class SongList extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 	
@@ -61,25 +64,30 @@ public class SongList extends ListActivity implements LoaderManager.LoaderCallba
 //        getLoaderManager().initLoader(0, null, this);
         
         // Populate the database
-		dbHandler = new DatabaseHandler(this.getApplicationContext());
-		try {
-			fullScan(new File("/storage/extSdCard/Music"));
-		} catch (CannotReadException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TagException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ReadOnlyFileException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidAudioFrameException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//        
+//		dbHandler = new DatabaseHandler(this.getApplicationContext());
+//		try {
+//			fullScan(new File("/storage/extSdCard/Music"));
+//		} catch (CannotReadException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (TagException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (ReadOnlyFileException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (InvalidAudioFrameException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+        
+        Intent fullScanIntent = new Intent(this, FileScanService.class);        
+        PendingIntent fullScanpi;
+        
 		
 		// Create an empty adapter we will use to display the loaded data.
         // We pass null for the cursor, then update it in onLoadFinished()

@@ -28,13 +28,13 @@
         </activity>
 
         <service
-            android:name="com.waves.library.FileScanService"
+            android:name="com.waves.library.scan.FileScanService"
             android:enabled="true"
             android:exported="false" >
         </service>
 
         <receiver
-            android:name="com.waves.library.LibFileMonitor"
+            android:name="com.waves.library.scan.FileMonitor"
             android:enabled="true"
             android:exported="false" >
         </receiver>
