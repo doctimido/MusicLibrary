@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="full_scan_bound">com.waves.FULL_SCAN_BOUND</string>
+    <string name="full_scan_unbound">com.waves.FULL_SCAN_UNBOUND</string>
+    <string name="single_file">com.waves.SINGLE_FILE</string>
+    
+</resources>

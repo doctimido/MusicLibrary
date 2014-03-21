@@ -10,6 +10,8 @@ import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.TagException;
 
+import android.R;
+
 import com.waves.library.utils.DbUtils;
 
 public class FullScanTask extends FileScanService implements Runnable {
@@ -18,21 +20,18 @@ public class FullScanTask extends FileScanService implements Runnable {
 	 * message back to the main thread each time an entry in the database is
 	 * changed or an entry is added.
 	 */
-	public static String FULL_SCAN_BOUND_INTENT = new String(
-			"com.waves.library.scan.FULL_SCAN_BOUND_INTENT");
+	public static int FULL_SCAN_BOUND = com.waves.R.string.full_scan_bound;
 	/**
 	 * Start an unbound service. The service is meant to run in this mode when
 	 * the user is not looking at the library. This does not send messages back
 	 * to the main thread until it is finished, and will be faster than the
 	 * bound version.
 	 */
-	public static String FULL_SCAN_UNBOUND_INTENT = new String(
-			"com.waves.library.scan.FULL_SCAN_UNBOUND_INTENT");
+	public static int FULL_SCAN_UNBOUND = com.waves.R.string.full_scan_unbound;
 	/**
 	 * Scan or rescan a single file into the database.
 	 */
-	public static String SINGLE_FILE_INTENT = new String(
-			"com.waves.library.scan.SINGLE_FILE_INTENT");
+	public static int SINGLE_FILE = com.waves.R.string.single_file;
 
 	private File _startDir;
 

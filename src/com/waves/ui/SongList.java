@@ -60,30 +60,6 @@ public class SongList extends ListActivity implements LoaderManager.LoaderCallba
         String[] fromColumns = { "_id" };
         String[] filter = { "l%" };
         int[] toViews = {android.R.id.text1}; // The TextView in simple_list_item_1
-         
-//        getLoaderManager().initLoader(0, null, this);
-        
-        // Populate the database
-//        
-//		dbHandler = new DatabaseHandler(this.getApplicationContext());
-//		try {
-//			fullScan(new File("/storage/extSdCard/Music"));
-//		} catch (CannotReadException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (TagException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (ReadOnlyFileException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (InvalidAudioFrameException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
         
         Intent fullScanIntent = new Intent(this, FileScanService.class);        
         PendingIntent fullScanpi;

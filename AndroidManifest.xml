@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.musiclibrary"
+    package="com.waves"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -31,6 +31,19 @@
             android:name="com.waves.library.scan.FileScanService"
             android:enabled="true"
             android:exported="false" >
+			<intent-filter>
+	              <action android:name="@string/full_scan_bound" />
+	              <category android:name="android.intent.category.DEFAULT" />
+	              <data android:scheme="topDir" />
+	              
+	              <action android:name="@string/full_scan_unbound" />
+	              <category android:name="android.intent.category.DEFAULT" />
+	              <data android:scheme="topDir" />
+	              
+	              <action android:name="@string/single_file" />
+	              <category android:name="android.intent.category.DEFAULT" />
+	              <data android:scheme="file" />
+            </intent-filter>
         </service>
 
         <receiver
