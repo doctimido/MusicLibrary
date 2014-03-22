@@ -32,17 +32,17 @@
             android:enabled="true"
             android:exported="false" >
 			<intent-filter>
-	              <action android:name="@string/full_scan_bound" />
+	              <action android:name="@string/intent_full_scan_bound" />
 	              <category android:name="android.intent.category.DEFAULT" />
-	              <data android:scheme="topDir" />
+	              <data android:scheme="@string/scheme_top_dir" />
 	              
-	              <action android:name="@string/full_scan_unbound" />
+	              <action android:name="@string/intent_full_scan_unbound" />
 	              <category android:name="android.intent.category.DEFAULT" />
-	              <data android:scheme="topDir" />
+	              <data android:scheme="@string/scheme_top_dir" />
 	              
-	              <action android:name="@string/single_file" />
+	              <action android:name="@string/intent_single_file" />
 	              <category android:name="android.intent.category.DEFAULT" />
-	              <data android:scheme="file" />
+	              <data android:scheme="@string/scheme_file" />
             </intent-filter>
         </service>
 

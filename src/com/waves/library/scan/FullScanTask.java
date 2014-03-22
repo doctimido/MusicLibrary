@@ -15,24 +15,6 @@ import android.R;
 import com.waves.library.utils.DbUtils;
 
 public class FullScanTask extends FileScanService implements Runnable {
-	/**
-	 * Start a bound service. This service will do a full scan and send a
-	 * message back to the main thread each time an entry in the database is
-	 * changed or an entry is added.
-	 */
-	public static int FULL_SCAN_BOUND = com.waves.R.string.full_scan_bound;
-	/**
-	 * Start an unbound service. The service is meant to run in this mode when
-	 * the user is not looking at the library. This does not send messages back
-	 * to the main thread until it is finished, and will be faster than the
-	 * bound version.
-	 */
-	public static int FULL_SCAN_UNBOUND = com.waves.R.string.full_scan_unbound;
-	/**
-	 * Scan or rescan a single file into the database.
-	 */
-	public static int SINGLE_FILE = com.waves.R.string.single_file;
-
 	private File _startDir;
 
 	public AudioFile song;
@@ -79,7 +61,7 @@ public class FullScanTask extends FileScanService implements Runnable {
 			} else {
 				/*
 				 * TODO filter for MIME type. We don't want unplayables sneaking
-				 * in give a warning for unplayables maybe? this could do a
+				 * in. Give a warning for unplayables maybe? this could do a
 				 * preliminary scan and allow others to be caught with
 				 * exceptions
 				 */

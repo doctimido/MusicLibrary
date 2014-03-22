@@ -5,6 +5,8 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="music_path">/storage/extSdCard/Music/</string>
+    <string name="full_scan">Full Scan</string>
+    <string name="background_scan">Background Scan</string>
     <string name="title_activity_parse_meta_data">ParseMetaData</string>
     <string name="title_activity_home_page">HomePage</string>
     <string name="title_activity_song_list">SongList</string>

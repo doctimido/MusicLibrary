@@ -7,7 +7,8 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.musiclibrary.R;
+import com.waves.R;
+import com.waves.library.scan.FileScanService;
 
 public class HomePage extends Activity {
 
@@ -15,15 +16,28 @@ public class HomePage extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home_page);
-		
-		final Button button = (Button) findViewById(R.id.btnLibrary);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	Intent intent = new Intent(getApplicationContext(), SongList.class);
-                startActivity(intent);
-            }
-        });
-        
+
+		final Button btnFullScan = (Button) findViewById(R.id.btnFullScan);
+		btnFullScan.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent intent = new Intent(getApplicationContext(),
+						SongList.class);
+				intent.putExtra(SongList.START_SCAN, true);
+				startActivity(intent);
+			}
+		});
+
+		final Button btnBackgroundScan = (Button) findViewById(R.id.btnBackgroundScan);
+		btnBackgroundScan.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				//TODO class to select default directory
+				Intent intent = new Intent(getString(
+						FileScanService.FULL_SCAN_UNBOUND,
+						getString(R.string.scheme_top_dir)
+								+ "/storage/extSdCard/Music"));
+				startActivity(intent);
+			}
+		});
 	}
 
 	@Override
@@ -32,7 +46,5 @@ public class HomePage extends Activity {
 		getMenuInflater().inflate(R.menu.home_page, menu);
 		return true;
 	}
-	
-	
 
 }
